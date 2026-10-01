@@ -1,0 +1,44 @@
+@model Core.Models.Song
+
+@{
+    ViewData["Title"] = "Create song";
+}
+
+<h1>Create song</h1>
+
+<form asp-controller="Songs" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="Title"></label>
+        <input asp-for="Title" />
+        <span asp-validation-for="Title"></span>
+    </div>
+
+    <div>
+        <label asp-for="Artist"></label>
+        <input asp-for="Artist" />
+        <span asp-validation-for="Artist"></span>
+    </div>
+
+    <div>
+        <label asp-for="Album"></label>
+        <input asp-for="Album" />
+        <span asp-validation-for="Album"></span>
+    </div>
+
+    <div>
+        <label asp-for="Genre"></label>
+        <input asp-for="Genre" />
+        <span asp-validation-for="Genre"></span>
+    </div>
+
+    <div>
+        <label asp-for="ReleaseDate"></label>
+        <input asp-for="ReleaseDate" type="date" />
+        <span asp-validation-for="ReleaseDate"></span>
+    </div>
+
+    <button type="submit">Create song</button>
+</form>

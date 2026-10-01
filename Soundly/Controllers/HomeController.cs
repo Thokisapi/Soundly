@@ -1,24 +1,21 @@
-using System.Diagnostics;
+using Datalayer;
 using Microsoft.AspNetCore.Mvc;
-using Soundly.Models;
 
 namespace Soundly.Controllers;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    private readonly SongRepository _songRepository;
+
+    public HomeController(SongRepository songRepository)
     {
-        return View();
+        _songRepository = songRepository;
     }
 
-    public IActionResult Privacy()
+    public async Task<IActionResult> Index()
     {
-        return View();
-    }
+        var songs = await _songRepository.GetSongsAsync();
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return View(songs);
     }
 }

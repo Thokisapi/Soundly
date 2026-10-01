@@ -1,6 +1,13 @@
+using Datalayer;
+
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException(
+        "Connection string 'DefaultConnection' was not found.");
+
 // Add services to the container.
+builder.Services.AddSingleton(new SongRepository(connectionString));
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

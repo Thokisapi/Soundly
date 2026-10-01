@@ -1,8 +1,68 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model IReadOnlyList<Song>
+
+@{
+    ViewData["Title"] = "Library";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<main class="app-shell">
+    <aside class="sidebar">
+        <div class="brand-mark" aria-hidden="true">S</div>
+        <h1>Manage</h1>
+        <a class="sidebar-link active" href="/">Library</a>
+        <a class="sidebar-link" asp-controller="Songs" asp-action="Create">Add song</a>
+    </aside>
+
+    <section class="library-panel">
+        <header class="topbar">
+            <button class="icon-button home-button" type="button" aria-label="Home">⌂</button>
+            <label class="search-box">
+                <span class="sr-only">Search songs, playlists and artists</span>
+                <input type="search" placeholder="Search for songs playlists artists" />
+            </label>
+            <a class="icon-button add-button" asp-controller="Songs" asp-action="Create" aria-label="Add song">+</a>
+            <button class="avatar" type="button" aria-label="Profile">T</button>
+        </header>
+
+        <div class="song-table" role="table" aria-label="Songs">
+            <div class="song-header" role="row">
+                <span>Song</span>
+                <span>Artist</span>
+                <span>Album</span>
+                <span>Release date</span>
+                <span>Duration</span>
+                <span>Cover</span>
+                <span>Action</span>
+            </div>
+
+            @foreach (var song in Model)
+            {
+                <div class="song-row" role="row">
+                    <span>@song.Title</span>
+                    <span>@song.Artist</span>
+                    <span>@song.Album</span>
+                    <span>@song.ReleaseDate.ToString("dd-MM-yyyy")</span>
+                    <span>4:59</span>
+                    <span><span class="cover-placeholder small-cover">NCS</span></span>
+                    <span class="row-actions"><button type="button" aria-label="Play song">o</button><button type="button" aria-label="More actions">o</button></span>
+                </div>
+            }
+        </div>
+    </section>
+
+    <aside class="now-playing">
+        <div class="cover-placeholder large-cover">ALBUM<br />ART</div>
+        <h2>I Just Might</h2>
+        <p class="track-subtitle">The Romantic</p>
+        <p class="track-artist">Bruno Mars</p>
+        <div class="player-controls" aria-label="Playback controls">
+            <button type="button" aria-label="Previous song">&lt;&lt;</button>
+            <button type="button" aria-label="Rewind">&lt;</button>
+            <button class="play-button" type="button" aria-label="Play">></button>
+            <button type="button" aria-label="Fast forward">></button>
+            <button type="button" aria-label="Next song">>></button>
+        </div>
+        <input class="progress" type="range" min="0" max="100" value="68" aria-label="Track progress" />
+        <button class="favorite" type="button" aria-label="Favorite song">&#9829;</button>
+        <p class="track-description">Additional track/artist/genre description</p>
+    </aside>
+</main>
