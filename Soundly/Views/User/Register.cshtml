@@ -1,0 +1,41 @@
+@model Soundly.Models.RegisterViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Register";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Soundly</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="register-page">
+    <main class="register-card">
+        <div class="register-logo" aria-hidden="true">S</div>
+        <h1>Soundly</h1>
+
+        <form asp-controller="User" asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="register-validation"></div>
+
+            <label asp-for="Username"></label>
+            <input asp-for="Username" autocomplete="username" autofocus />
+            <span asp-validation-for="Username" class="register-validation"></span>
+
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="email" autocomplete="email" />
+            <span asp-validation-for="Email" class="register-validation"></span>
+
+            <label asp-for="Password"></label>
+            <input asp-for="Password" autocomplete="new-password" />
+            <span asp-validation-for="Password" class="register-validation"></span>
+
+            <p class="register-sign-in">Already an account? Sign in <a href="../">here</a></p>
+            <button type="submit">Register</button>
+        </form>
+    </main>
+</body>
+</html>
