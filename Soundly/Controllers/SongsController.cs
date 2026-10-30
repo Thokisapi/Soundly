@@ -22,27 +22,27 @@ public class SongsController : Controller
 
     [HttpPost("create")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Song song)
+    public IActionResult Create(Song song)
     {
         if (!ModelState.IsValid)
         {
             return View(song);
         }
 
-        await _songRepository.CreateSongAsync(song);
+        _songRepository.CreateSong(song);
 
         return RedirectToAction(nameof(Create));
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> CreateSong(Song song)
+    public IActionResult CreateSong(Song song)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var songId = await _songRepository.CreateSongAsync(song);
+        var songId = _songRepository.CreateSong(song);
 
         return Ok(new
         {

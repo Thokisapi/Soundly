@@ -7,7 +7,6 @@
 <h1>Create song</h1>
 
 <form asp-controller="Songs" asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
     <div asp-validation-summary="ModelOnly"></div>
 
     <div>

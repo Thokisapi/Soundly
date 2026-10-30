@@ -12,21 +12,19 @@ public class SongRepository
         _connectionString = connectionString;
     }
 
-    public async Task<int> CreateSongAsync(Song song)
+    public int CreateSong(Song song)
     {
         const string sql = """
                            INSERT INTO song
                                (title, artist, album, genre, release_date)
                            VALUES
                                (@title, @artist, @album, @genre, @releaseDate);
-
-                           SELECT LAST_INSERT_ID();
                            """;
 
-        await using var connection = new MySqlConnection(_connectionString);
-        await connection.OpenAsync();
+        using var connection = new MySqlConnection(_connectionString);
+        connection.Open();
 
-        await using var command = new MySqlCommand(sql, connection);
+        using var command = new MySqlCommand(sql, connection);
 
         command.Parameters.AddWithValue("@title", song.Title);
         command.Parameters.AddWithValue("@artist", song.Artist);
@@ -34,13 +32,13 @@ public class SongRepository
         command.Parameters.AddWithValue("@genre", song.Genre);
         command.Parameters.AddWithValue("@releaseDate", song.ReleaseDate.ToDateTime(TimeOnly.MinValue));
 
-        var result = await command.ExecuteScalarAsync();
+        var result = command.ExecuteNonQuery();
         Console.WriteLine($"Inserted song with ID: {result}");
 
         return Convert.ToInt32(result);
     }
 
-    public async Task<IReadOnlyList<Song>> GetSongsAsync()
+    public IReadOnlyList<Song> GetSongs()
     {
         const string sql = """
                            SELECT id, title, artist, album, genre, release_date
@@ -50,12 +48,12 @@ public class SongRepository
 
         var songs = new List<Song>();
 
-        await using var connection = new MySqlConnection(_connectionString);
-        await connection.OpenAsync();
-        await using var command = new MySqlCommand(sql, connection);
-        await using var reader = await command.ExecuteReaderAsync();
+        using var connection = new MySqlConnection(_connectionString);
+        connection.Open();
+        using var command = new MySqlCommand(sql, connection);
+        using var reader = command.ExecuteReader();
 
-        while (await reader.ReadAsync())
+        while (reader.Read())
         {
             songs.Add(new Song
             {
@@ -64,11 +62,9 @@ public class SongRepository
                 Artist = reader.GetString(reader.GetOrdinal("artist")),
                 Album = reader.GetString(reader.GetOrdinal("album")),
                 Genre = reader.GetString(reader.GetOrdinal("genre")),
-                ReleaseDate = DateOnly.FromDateTime(
-                    reader.GetDateTime(reader.GetOrdinal("release_date")))
+                ReleaseDate = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("release_date")))
             });
         }
-
         return songs;
     }
 }

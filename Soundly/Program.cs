@@ -1,3 +1,5 @@
+using Core.Interfaces;
+using Core.Services;
 using Datalayer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Add services to the container.
 builder.Services.AddSingleton(new SongRepository(connectionString));
+builder.Services.AddSingleton<IUserRepository>(new UserRepository(connectionString));
+builder.Services.AddScoped<UserService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

@@ -12,9 +12,9 @@ public class HomeController : Controller
         _songRepository = songRepository;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var songs = await _songRepository.GetSongsAsync();
+        var songs = _songRepository.GetSongs();
 
         return View(songs);
     }

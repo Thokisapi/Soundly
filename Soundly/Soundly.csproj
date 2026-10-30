@@ -21,8 +21,4 @@
         <ProjectReference Include="..\Datalayer\Datalayer.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
 </Project>
