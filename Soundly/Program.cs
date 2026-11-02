@@ -9,7 +9,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
         "Connection string 'DefaultConnection' was not found.");
 
 // Add services to the container.
-builder.Services.AddSingleton(new SongRepository(connectionString));
+builder.Services.AddSingleton<ISongRepository>(new SongRepository(connectionString));
+builder.Services.AddScoped<SongService>();
 builder.Services.AddSingleton<IUserRepository>(new UserRepository(connectionString));
 builder.Services.AddScoped<UserService>();
 builder.Services.AddControllersWithViews();

@@ -1,6 +1,6 @@
 using Core.Services;
-using Microsoft.AspNetCore.Mvc;
 using Soundly.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Soundly.Controllers;
 
@@ -30,5 +30,36 @@ public class UserController : Controller
 
         _userService.RegisterUser(model.Username, model.Email, model.Password);
         return RedirectToAction(nameof(Register));
+    }
+    [HttpGet("login")]
+    public IActionResult Login()
+    {
+        return View(new LoginViewModel());
+    }
+    
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var user = _userService.Login(
+            model.Email,
+            model.Password);
+
+        if (user is null)
+        {
+            ModelState.AddModelError(
+                string.Empty,
+                "Invalid email or password.");
+
+            return View(model);
+        }
+
+        // Create the authentication cookie here.
+
+        return RedirectToAction("Index", "Home");
     }
 }

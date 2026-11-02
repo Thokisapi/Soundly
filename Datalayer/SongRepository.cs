@@ -1,9 +1,10 @@
 ﻿using Core.Models;
+using Core.Interfaces;
 using MySql.Data.MySqlClient;
 
 namespace Datalayer;
 
-public class SongRepository
+public class SongRepository : ISongRepository
 {
     private readonly string _connectionString;
 
@@ -33,7 +34,7 @@ public class SongRepository
         command.Parameters.AddWithValue("@releaseDate", song.ReleaseDate.ToDateTime(TimeOnly.MinValue));
 
         var result = command.ExecuteNonQuery();
-        Console.WriteLine($"Inserted song with ID: {result}");
+        Console.WriteLine($"{result}");
 
         return Convert.ToInt32(result);
     }
@@ -66,5 +67,23 @@ public class SongRepository
             });
         }
         return songs;
+    }
+
+    public int DeleteSong(int id)
+    {
+        const string sql = """
+                           DELETE FROM song
+                           WHERE id = @id;
+                           """;
+        using var connection = new MySqlConnection(_connectionString);
+        connection.Open();
+
+        using var command = new MySqlCommand(sql, connection);
+        command.Parameters.AddWithValue("@id", id);
+
+        var result = command.ExecuteNonQuery();
+        Console.WriteLine($"{result}");
+
+        return Convert.ToInt32(result);
     }
 }

@@ -1,20 +1,20 @@
-using Datalayer;
+using Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Soundly.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly SongRepository _songRepository;
+    private readonly SongService _songService;
 
-    public HomeController(SongRepository songRepository)
+    public HomeController(SongService songService)
     {
-        _songRepository = songRepository;
+        _songService = songService;
     }
 
     public IActionResult Index()
     {
-        var songs = _songRepository.GetSongs();
+        var songs = _songService.GetSongs();
 
         return View(songs);
     }
