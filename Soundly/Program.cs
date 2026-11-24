@@ -1,6 +1,8 @@
 using Core.Interfaces;
+using Core.Models;
 using Core.Services;
 using Datalayer;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +11,23 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
         "Connection string 'DefaultConnection' was not found.");
 
 // Add services to the container.
-builder.Services.AddSingleton<ISongRepository>(new SongRepository(connectionString));
 builder.Services.AddScoped<SongService>();
-builder.Services.AddSingleton<IUserRepository>(new UserRepository(connectionString));
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<UserService>();
+
+//Add repositories to the container
+builder.Services.AddSingleton<ISongRepository>(new SongRepository(connectionString));
+builder.Services.AddSingleton<IUserRepository>(new UserRepository(connectionString));
+
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication("SoundlyCookie")
+    .AddCookie("SoundlyCookie", options =>
+    {
+        options.LoginPath = "/user/login";
+        options.AccessDeniedPath = "/user/access-denied";
+        
+    });
 
 var app = builder.Build();
 
@@ -28,6 +42,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

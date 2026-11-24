@@ -1,6 +1,7 @@
 using Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Soundly.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Soundly.Controllers;
 
@@ -15,13 +16,16 @@ public class SongsController : Controller
     }
 
     [HttpGet("create")]
+    [Authorize(Roles = "admin")]
     public IActionResult Create()
+
     {
         return View(new SongViewModel());
     }
 
     [HttpPost("create")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public IActionResult Create(SongViewModel model)
     {
         if (!ModelState.IsValid)
@@ -39,6 +43,7 @@ public class SongsController : Controller
         return RedirectToAction(nameof(Create));
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("")]
     public IActionResult CreateSong(SongViewModel model)
     {
@@ -59,4 +64,5 @@ public class SongsController : Controller
             Id = songId
         });
     }
+
 }

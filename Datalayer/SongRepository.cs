@@ -86,4 +86,9 @@ public class SongRepository : ISongRepository
 
         return Convert.ToInt32(result);
     }
+
+    public int UpdateSong(Song song)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Core.Services;
+using Microsoft.AspNetCore.Authentication;
 using Soundly.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,6 +40,7 @@ public class UserController : Controller
     }
     
     [HttpPost("login")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid)
@@ -58,8 +61,29 @@ public class UserController : Controller
             return View(model);
         }
 
-        // Create the authentication cookie here.
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, user.Username),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Role, user.Role)
+        };
+
+        var identity = new ClaimsIdentity(
+            claims,
+            "SoundlyCookie");
+
+        await HttpContext.SignInAsync(
+            "SoundlyCookie",
+            new ClaimsPrincipal(identity));
 
         return RedirectToAction("Index", "Home");
+    }
+    [HttpPost("logout")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync("SoundlyCookie");
+        return RedirectToAction(nameof(Login));
     }
 }

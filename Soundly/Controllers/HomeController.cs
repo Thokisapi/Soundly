@@ -1,5 +1,6 @@
 using Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Soundly.Controllers;
 
@@ -12,6 +13,7 @@ public class HomeController : Controller
         _songService = songService;
     }
 
+    [Authorize(Roles = "admin,user")] 
     public IActionResult Index()
     {
         var songs = _songService.GetSongs();

@@ -1,16 +1,20 @@
 using Core.Interfaces;
 using Core.Models;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace Core.Services;
 
 public class UserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(
+        IUserRepository userRepository,
+        IPasswordHasher<User> passwordHasher)
     {
         _userRepository = userRepository;
+        _passwordHasher = passwordHasher;
     }
 
     public void RegisterUser(string username, string email, string password)
@@ -19,34 +23,30 @@ public class UserService
         {
             Username = username,
             Email = email,
-            HashedPassword = password,
             Role = "user"
         };
-
+        user.HashedPassword = _passwordHasher.HashPassword(user, password);
         _userRepository.CreateUser(user);
     }
 
-    public User GetUser(string email)
+    public User? Login(string email, string password)
     {
         var user = _userRepository.GetUserByEmail(email);
-        if (user == null)
-        {
-            throw new Exception("User not found");
-        }
-        return user;
-    }
-    public User? Login(string email , string password)
-    {
-        var user = _userRepository.GetUserByEmail(email);
-        if (user == null || user.HashedPassword != password)
+        if (user is null)
         {
             return null;
         }
-        return new User{
-            Id = user.Id,
-            Username = user.Username,
-            Email = user.Email,
-            HashedPassword = user.HashedPassword,
-            Role = user.Role
-        };}
+
+        var result = _passwordHasher.VerifyHashedPassword(
+            user,
+            user.HashedPassword,
+            password);
+
+        if (result == PasswordVerificationResult.Failed)
+        {
+            return null;
+        }
+
+        return user;
     }
+}
