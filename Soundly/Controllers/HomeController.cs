@@ -13,7 +13,7 @@ public class HomeController : Controller
         _songService = songService;
     }
 
-    [Authorize(Roles = "admin,user")] 
+    [Authorize]
     public IActionResult Index()
     {
         var songs = _songService.GetSongs();
